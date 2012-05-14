@@ -1,7 +1,6 @@
 package models;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -22,24 +21,24 @@ public class JavaParser implements IParser {
 	// Cableado
 	private static String path = "MetricResults.xml";
 
-	public static void main(final String[] args) {
-		System.out.println("HOLA");
-		final JavaParser instance = JavaParser.getInstance();
-		System.out.println("CHAU");
-		Map<String, Float> map = new HashMap<String, Float>();
-		map = instance.getLinesPerFile();
-		System.out.println(map.toString());
-		map = instance.getCommentsPerMethod();
-		System.out.println(map.toString());
-		map = instance.getDepencePerPackage();
-		System.out.println(map.toString());
-		map = instance.getDependencyPerPackage();
-		System.out.println(map.toString());
-		map = instance.getLinesAvereagePerMethodPerFile();
-		System.out.println(map.toString());
-		map = instance.getParametersPerMethod();
-		System.out.println(map.toString());
-	}
+	// public static void main(final String[] args) {
+	// System.out.println("HOLA");
+	// final JavaParser instance = JavaParser.getInstance();
+	// System.out.println("CHAU");
+	// Map<String, Float> map = new HashMap<String, Float>();
+	// map = instance.getLinesPerFile();
+	// System.out.println(map.toString());
+	// map = instance.getCommentsPerMethod();
+	// System.out.println(map.toString());
+	// map = instance.getDepencePerPackage();
+	// System.out.println(map.toString());
+	// map = instance.getDependencyPerPackage();
+	// System.out.println(map.toString());
+	// map = instance.getLinesAvereagePerMethodPerFile();
+	// System.out.println(map.toString());
+	// map = instance.getParametersPerMethod();
+	// System.out.println(map.toString());
+	// }
 
 	public JavaParser() {
 		this.parsedCodeimpl = this.parseXML(path);
