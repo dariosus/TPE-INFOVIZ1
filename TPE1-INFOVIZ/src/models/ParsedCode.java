@@ -67,4 +67,77 @@ public class ParsedCode implements IParser {
 
 	}
 
+	@Override
+	public Map<String, Integer> getLinesPerFile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setLinesPerFile(final String file, final Integer lines) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Map<String, Integer> getParametersPerMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setParameterPerMethod(final String Method, final Integer lines) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Map<String, Integer> getCommentsPerMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCommentsPerMethod(final String Method, final Integer lines) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Map<String, Integer> getLinesAvereagePerMethodPerFile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setLinesAvereagePerMethodPerFile(final String file,
+			final Integer lines) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Map<String, Integer> getDependencyPerFile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDependencyPerFile(final String file, final Integer lines) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Map<String, Integer> getDepencePerFile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDependencePerFile(final String file, final Integer lines) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
