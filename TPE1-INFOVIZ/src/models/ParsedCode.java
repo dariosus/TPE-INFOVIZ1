@@ -3,22 +3,20 @@ package models;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ParsedCode implements IParser {
+public class ParsedCode {
 
-	Map<String, Map<String, Float>> functionsMap = new HashMap<String, Map<String, Float>>();
+	Map<String, Map<String, Float>> functionsMap;
 
 	public ParsedCode() {
 		this.functionsMap = new HashMap<String, Map<String, Float>>();
 	}
 
 	public boolean addFunction(final String function) {
-		if (this.functionsMap.containsKey(function)) {
-			return false;
-		} else {
+		if (!this.functionsMap.containsKey(function)) {
 			this.functionsMap.put(function, new HashMap<String, Float>());
+			return true;
 		}
-
-		return true;
+		return false;
 	}
 
 	public boolean addMetricToFunction(final String function,
@@ -26,6 +24,7 @@ public class ParsedCode implements IParser {
 
 		if (!this.functionsMap.containsKey(function)) {
 			this.addFunction(function);
+			this.functionsMap.get(function).put(metric, value);
 		} else {
 			this.functionsMap.get(function).put(metric, value);
 
@@ -41,7 +40,6 @@ public class ParsedCode implements IParser {
 		if (!this.functionsMap.containsKey(function)) {
 			return null;
 		}
-
 		return this.functionsMap.get(function);
 
 	}
@@ -55,89 +53,38 @@ public class ParsedCode implements IParser {
 
 	}
 
-	@Override
-	public Integer getLinesPerMethod() {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, Float> getBuilder(final String parameter) {
+		final Map<String, Float> resp = new HashMap<String, Float>();
+		for (final Map.Entry<String, Map<String, Float>> entry : this.functionsMap
+				.entrySet()) {
+			for (final Map.Entry<String, Float> values : entry.getValue()
+					.entrySet()) {
+				if (values.getKey().equals(parameter)
+						&& !entry.getKey().equals("model")
+						&& entry.getKey().contains("java")) {
+					resp.put(entry.getKey(), values.getValue());
+				}
+			}
+		}
+
+		return resp;
 	}
 
-	@Override
-	public void setLinesPerMethod(final Integer linesPerMethod) {
-		// TODO Auto-generated method stub
+	public Map<String, Float> getPackageBuilder(final String parameter) {
+		final Map<String, Float> resp = new HashMap<String, Float>();
+		for (final Map.Entry<String, Map<String, Float>> entry : this.functionsMap
+				.entrySet()) {
+			for (final Map.Entry<String, Float> values : entry.getValue()
+					.entrySet()) {
+				if (values.getKey().equals(parameter)
+						&& !entry.getKey().equals("model")
+						&& !entry.getKey().contains("java")) {
+					resp.put(entry.getKey(), values.getValue());
+				}
+			}
+		}
 
-	}
-
-	@Override
-	public Map<String, Integer> getLinesPerFile() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setLinesPerFile(final String file, final Integer lines) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Map<String, Integer> getParametersPerMethod() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setParameterPerMethod(final String Method, final Integer lines) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Map<String, Integer> getCommentsPerMethod() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setCommentsPerMethod(final String Method, final Integer lines) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Map<String, Integer> getLinesAvereagePerMethodPerFile() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setLinesAvereagePerMethodPerFile(final String file,
-			final Integer lines) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Map<String, Integer> getDependencyPerFile() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setDependencyPerFile(final String file, final Integer lines) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Map<String, Integer> getDepencePerFile() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setDependencePerFile(final String file, final Integer lines) {
-		// TODO Auto-generated method stub
-
+		return resp;
 	}
 
 }

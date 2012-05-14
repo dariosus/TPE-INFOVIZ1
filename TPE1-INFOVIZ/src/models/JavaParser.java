@@ -1,6 +1,7 @@
 package models;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,12 +17,28 @@ import org.xml.sax.SAXParseException;
 public class JavaParser implements IParser {
 
 	static JavaParser parserInstance;
-	ParsedCode parsedCodeimpl = new ParsedCode();
+	ParsedCode parsedCodeimpl;
 
+	// Cableado
 	private static String path = "MetricResults.xml";
 
 	public static void main(final String[] args) {
+		System.out.println("HOLA");
 		final JavaParser instance = JavaParser.getInstance();
+		System.out.println("CHAU");
+		Map<String, Float> map = new HashMap<String, Float>();
+		map = instance.getLinesPerFile();
+		System.out.println(map.toString());
+		map = instance.getCommentsPerMethod();
+		System.out.println(map.toString());
+		map = instance.getDepencePerPackage();
+		System.out.println(map.toString());
+		map = instance.getDependencyPerPackage();
+		System.out.println(map.toString());
+		map = instance.getLinesAvereagePerMethodPerFile();
+		System.out.println(map.toString());
+		map = instance.getParametersPerMethod();
+		System.out.println(map.toString());
 	}
 
 	public JavaParser() {
@@ -68,7 +85,7 @@ public class JavaParser implements IParser {
 				System.out.println("NODO NOMBRE:        " + functionName);
 
 				// Agrego la function
-				this.parsedCodeimpl.addFunction(functionName);
+				parsedCode.addFunction(functionName);
 
 				for (int n = 0; n < listOfmetricResults.getLength(); n++) {
 
@@ -92,7 +109,7 @@ public class JavaParser implements IParser {
 							value = Float.valueOf(valueName);
 						}
 
-						this.parsedCodeimpl.addMetricToFunction(functionName,
+						parsedCode.addMetricToFunction(functionName,
 								metricName, value);
 
 						System.out.println(metricName + ": " + value);
@@ -120,63 +137,34 @@ public class JavaParser implements IParser {
 	}
 
 	@Override
-	public Map<String, Integer> getLinesPerFile() {
-		return this.parsedCodeimpl.getLinesPerFile();
+	public Map<String, Float> getLinesPerFile() {
+		return this.parsedCodeimpl.getBuilder("Lines of Code");
 	}
 
 	@Override
-	public void setLinesPerFile(final String file, final Integer lines) {
-		this.parsedCodeimpl.setLinesPerFile(file, lines);
+	public Map<String, Float> getParametersPerMethod() {
+		return this.parsedCodeimpl.getBuilder("Average Number of Parameters");
 	}
 
 	@Override
-	public Map<String, Integer> getParametersPerMethod() {
-		return this.parsedCodeimpl.getParametersPerMethod();
+	public Map<String, Float> getCommentsPerMethod() {
+		return this.parsedCodeimpl.getBuilder("Number of Comments");
 	}
 
 	@Override
-	public void setParameterPerMethod(final String Method, final Integer lines) {
-		this.parsedCodeimpl.setParameterPerMethod(Method, lines);
+	public Map<String, Float> getLinesAvereagePerMethodPerFile() {
+		return this.parsedCodeimpl
+				.getBuilder("Average Lines Of Code Per Method");
 	}
 
 	@Override
-	public Map<String, Integer> getCommentsPerMethod() {
-		return this.parsedCodeimpl.getCommentsPerMethod();
+	public Map<String, Float> getDependencyPerPackage() {
+		return this.parsedCodeimpl.getPackageBuilder("Efferent Couplings");
 	}
 
 	@Override
-	public void setCommentsPerMethod(final String Method, final Integer lines) {
-		this.parsedCodeimpl.setCommentsPerMethod(Method, lines);
+	public Map<String, Float> getDepencePerPackage() {
+		return this.parsedCodeimpl.getPackageBuilder("Afferent Couplings");
 	}
 
-	@Override
-	public Map<String, Integer> getLinesAvereagePerMethodPerFile() {
-		return this.parsedCodeimpl.getLinesAvereagePerMethodPerFile();
-	}
-
-	@Override
-	public void setLinesAvereagePerMethodPerFile(final String file,
-			final Integer lines) {
-		this.parsedCodeimpl.setLinesAvereagePerMethodPerFile(file, lines);
-	}
-
-	@Override
-	public Map<String, Integer> getDependencyPerFile() {
-		return this.parsedCodeimpl.getDepencePerFile();
-	}
-
-	@Override
-	public void setDependencyPerFile(final String file, final Integer lines) {
-		this.parsedCodeimpl.setDependencePerFile(file, lines);
-	}
-
-	@Override
-	public Map<String, Integer> getDepencePerFile() {
-		return this.parsedCodeimpl.getDepencePerFile();
-	}
-
-	@Override
-	public void setDependencePerFile(final String file, final Integer lines) {
-		this.parsedCodeimpl.setDependencePerFile(file, lines);
-	}
 }
