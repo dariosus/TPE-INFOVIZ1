@@ -24,3 +24,5 @@ Todo nœmero por debajo de esta metrica no ser‡ graficado.
 -toleratedCalls: Idem ToleratedParameters pero para veces que la funcion llama a otras.
 
 -toleratedCalled: Idem que ToleratedParameters pero para las veces que una funcion es llamda.
+
+Para otros detalles de la instalaci—n o ejecuci—n chequear el informe.
