@@ -3,8 +3,8 @@ package models;
 public class Function {
 
 	private float lines;
-	private int called;
-	private int calls;
+	private float called;
+	private float calls;
 	private boolean recursive;
 	private boolean commented;
 	private String name;
@@ -15,7 +15,7 @@ public class Function {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Function(final float lines, final int called, final int calls,
+	public Function(final float lines, final float called, final float calls,
 			final int parameters, final boolean recursive,
 			final boolean commented, final String name, final Module module) {
 		this.lines = lines;
@@ -28,11 +28,11 @@ public class Function {
 		this.module = module;
 	}
 
-	public int getCalled() {
+	public float getCalled() {
 		return this.called;
 	}
 
-	public int getCalls() {
+	public float getCalls() {
 		return this.calls;
 	}
 
@@ -56,11 +56,11 @@ public class Function {
 		return this.recursive;
 	}
 
-	public void setCalled(final int called) {
+	public void setCalled(final float called) {
 		this.called = called;
 	}
 
-	public void setCalls(final int calls) {
+	public void setCalls(final float calls) {
 		this.calls = calls;
 	}
 

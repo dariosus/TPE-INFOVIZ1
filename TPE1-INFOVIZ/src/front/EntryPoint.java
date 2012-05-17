@@ -4,12 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import models.CallsValue;
 import models.Comparators;
 import models.Function;
 import models.JavaParser;
@@ -31,14 +33,17 @@ public class EntryPoint {
 		final int toleratedParameters = Integer.parseInt(args[2]);
 		final int limitedParameters = Integer.parseInt(args[3]);
 
-
 		final String title = "Java Code Analizer";
 		final String titleParameters = "Java Code Parameters";
 		final Comparators comparators = new Comparators();
+
 		final SortedSet<Function> functionsLines = new TreeSet<Function>(
 				comparators.getLinesComparator());
 
 		final SortedSet<Function> functionsParameters = new TreeSet<Function>(
+				comparators.getLinesComparator());
+
+		final SortedSet<Function> functionsBoxPlot = new TreeSet<Function>(
 				comparators.getLinesComparator());
 
 		final JavaParser javaparser = JavaParser.getInstance();
@@ -47,6 +52,39 @@ public class EntryPoint {
 
 		final Map<String, Float> parametersPerMethod = javaparser
 				.getParametersPerMethod();
+
+		final Map<String, Float> parametersCalls = javaparser
+				.getDependencyPerPackage();
+
+		final Map<String, Float> parametersCalled = javaparser
+				.getDepencePerPackage();
+
+		final Map<String, CallsValue> mapDependency = new HashMap<String, CallsValue>();
+
+		for (final Entry<String, Float> entry : parametersCalls.entrySet()) {
+			if (!mapDependency.containsKey(entry.getKey())) {
+
+				mapDependency.put(entry.getKey(),
+						new CallsValue(entry.getValue()));
+			}
+		}
+
+		for (final Entry<String, Float> entry : parametersCalled.entrySet()) {
+			if (!mapDependency.containsKey(entry.getKey())) {
+				mapDependency.put(entry.getKey(),
+						new CallsValue(0, entry.getValue()));
+			} else {
+				mapDependency.get(entry.getKey()).setCalled(entry.getValue());
+			}
+		}
+
+		for (final Entry<String, CallsValue> entry : mapDependency.entrySet()) {
+
+			functionsBoxPlot.add(new Function(20, entry.getValue().getCalled(),
+					entry.getValue().getCalls(), 39, true, true,
+					entry.getKey(), new Module("Module", null)));
+
+		}
 
 		for (final Entry<String, Float> entry : LinesPerMethod.entrySet()) {
 			if (entry.getValue() > limitedLines) {
@@ -75,6 +113,9 @@ public class EntryPoint {
 		generateVisualization(filenameCompartor, heightParameters, width,
 				toleratedParameters, titleParameters, functionsParameters,
 				"parameters");
+
+		generateVisualizationBoxplot("functionsBoxPlot", 700, 700, 10, 20,
+				"TITULO", functionsBoxPlot);
 
 	}
 
@@ -148,10 +189,9 @@ public class EntryPoint {
 				if (i < functions.size()) {
 					out.write(',');
 				}
-				System.out.println(func.getLines());
 				i++;
 			}
-			
+
 			out.write("\">\n");
 
 			i = 1;
@@ -201,9 +241,10 @@ public class EntryPoint {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void generateVisualizationBoxplot(String filename, final int height,
-			final int width, final int toleratedCalls, final int toleratedCalled, final String title,
+
+	public static void generateVisualizationBoxplot(String filename,
+			final int height, final int width, final int toleratedCalls,
+			final int toleratedCalled, final String title,
 			final Set<Function> functions) {
 
 		filename = filename + ".htm";
@@ -218,8 +259,8 @@ public class EntryPoint {
 			out.write("<applet code=\"swiftchart.class\" width=\"" + width
 					+ "\" height=\"" + height + "\">\n");
 
-			out.write("<param name=\"" + "chart_type" + "\" value=\""
-					+ "xy" + "\">\n");
+			out.write("<param name=\"" + "chart_type" + "\" value=\"" + "xy"
+					+ "\">\n");
 			out.write("<param name=\"" + "applet_bg" + "\" value=\"" + "EEEEEE"
 					+ "\">\n");
 			out.write("<param name=\"" + "chart_bg" + "\" value=\"" + "FFFFCC"
@@ -254,56 +295,99 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "grid_line_ver" + "\" value=\"" + "Y"
 					+ "\">\n");
-			out.write("<param name=\"" + "grid_line_hor_type" + "\" value=\"" + 0
-					+ "\">\n");
-			out.write("<param name=\"" + "grid_line_ver_type" + "\" value=\"" + 0
-					+ "\">\n");
-			
-			out.write("<param name=\"" + "s1_line_marker_type" + "\" value=\"" + 1
-					+ "\">\n");
+			out.write("<param name=\"" + "grid_line_hor_type" + "\" value=\""
+					+ 0 + "\">\n");
+			out.write("<param name=\"" + "grid_line_ver_type" + "\" value=\""
+					+ 0 + "\">\n");
+
+			out.write("<param name=\"" + "s1_line_marker_type" + "\" value=\""
+					+ 1 + "\">\n");
 			out.write("<param name=\"" + "s1_color" + "\" value=\"" + "00CC00"
 					+ "\">\n");
-			out.write("<param name=\"" + "s1_line_marker" + "\" value=\"" + "ONLY"
-					+ "\">\n");
+			out.write("<param name=\"" + "s1_line_marker" + "\" value=\""
+					+ "ONLY" + "\">\n");
 			out.write("<param name=\"" + "s1_label" + "\" value=\"" + "Tipo 1"
 					+ "\">\n");
-			
-			out.write("<param name=\"" + "s2_line_marker_type" + "\" value=\"" + 8
-					+ "\">\n");
+
+			out.write("<param name=\"" + "s2_line_marker_type" + "\" value=\""
+					+ 8 + "\">\n");
 			out.write("<param name=\"" + "s2_color" + "\" value=\"" + "CC0000"
 					+ "\">\n");
-			out.write("<param name=\"" + "s2_line_marker" + "\" value=\"" + "ONLY"
-					+ "\">\n");
+			out.write("<param name=\"" + "s2_line_marker" + "\" value=\""
+					+ "ONLY" + "\">\n");
 			out.write("<param name=\"" + "s2_label" + "\" value=\"" + "Tipo 2"
 					+ "\">\n");
-			
-			out.write("<param name=\"" + "s3_line_marker_type" + "\" value=\"" + 7
-					+ "\">\n");
+
+			out.write("<param name=\"" + "s3_line_marker_type" + "\" value=\""
+					+ 7 + "\">\n");
 			out.write("<param name=\"" + "s3_color" + "\" value=\"" + "0000CC"
 					+ "\">\n");
-			out.write("<param name=\"" + "s3_line_marker" + "\" value=\"" + "ONLY"
-					+ "\">\n");
+			out.write("<param name=\"" + "s3_line_marker" + "\" value=\""
+					+ "ONLY" + "\">\n");
 			out.write("<param name=\"" + "s3_label" + "\" value=\"" + "Tipo 3"
 					+ "\">\n");
-			
-			out.write("<param name=\"" + "s4_line_marker_type" + "\" value=\"" + 3
-					+ "\">\n");
+
+			out.write("<param name=\"" + "s4_line_marker_type" + "\" value=\""
+					+ 3 + "\">\n");
 			out.write("<param name=\"" + "s4_color" + "\" value=\"" + "00CCCC"
 					+ "\">\n");
-			out.write("<param name=\"" + "s4_line_marker" + "\" value=\"" + "ONLY"
-					+ "\">\n");
+			out.write("<param name=\"" + "s4_line_marker" + "\" value=\""
+					+ "ONLY" + "\">\n");
 			out.write("<param name=\"" + "s4_label" + "\" value=\"" + "Tipo 4"
 					+ "\">\n");
 
 			out.write("<param name=\"" + "xy_pairs" + "\" value=\"" + "Y"
 					+ "\">\n");
-			
+
 			int cant;
-			
+
 			out.write("<param name=\"" + "xy1_value" + "\" value=\"");
 			cant = 0;
-			for (Function func: functions) {
-				if (func.getCalled() < toleratedCalled && func.getCalls() < toleratedCalls) {
+			for (final Function func : functions) {
+				if (func.getCalled() < toleratedCalled
+						&& func.getCalls() < toleratedCalls) {
+					if (cant != 0) {
+						out.write(",");
+					}
+					out.write(func.getCalled() + ":" + func.getCalls());
+					cant++;
+				}
+			}
+			out.write("\">\n");
+
+			out.write("<param name=\"" + "xy2_value" + "\" value=\"");
+			cant = 0;
+			for (final Function func : functions) {
+				if (func.getCalled() >= toleratedCalled
+						&& func.getCalls() < toleratedCalls) {
+					if (cant != 0) {
+						out.write(",");
+					}
+					out.write(func.getCalled() + ":" + func.getCalls());
+					cant++;
+				}
+			}
+			out.write("\">\n");
+
+			out.write("<param name=\"" + "xy3_value" + "\" value=\"");
+			cant = 0;
+			for (final Function func : functions) {
+				if (func.getCalled() < toleratedCalled
+						&& func.getCalls() >= toleratedCalls) {
+					if (cant != 0) {
+						out.write(",");
+					}
+					out.write(func.getCalled() + ":" + func.getCalls());
+					cant++;
+				}
+			}
+			out.write("\">\n");
+
+			out.write("<param name=\"" + "xy4_value" + "\" value=\"");
+			cant = 0;
+			for (final Function func : functions) {
+				if (func.getCalled() >= toleratedCalled
+						&& func.getCalls() >= toleratedCalls) {
 					if (cant != 0) {
 						out.write(",");
 					}
@@ -312,50 +396,8 @@ public class EntryPoint {
 				}
 			}
 
-			out.write("<param name=\"" + "xy2_value" + "\" value=\"");
-			cant = 0;
-			for (Function func: functions) {
-				if (func.getCalled() >= toleratedCalled && func.getCalls() < toleratedCalls) {
-					if (cant != 0) {
-						out.write(",");
-					}
-					out.write(func.getCalled() + ":" + func.getCalls());
-					cant++;
-				}
-			}
-			
-			out.write("<param name=\"" + "xy3_value" + "\" value=\"");
-			cant = 0;
-			for (Function func: functions) {
-				if (func.getCalled() < toleratedCalled && func.getCalls() >= toleratedCalls) {
-					if (cant != 0) {
-						out.write(",");
-					}
-					out.write(func.getCalled() + ":" + func.getCalls());
-					cant++;
-				}
-			}
-			
-			out.write("<param name=\"" + "xy4_value" + "\" value=\"");
-			cant = 0;
-			for (Function func: functions) {
-				if (func.getCalled() >= toleratedCalled && func.getCalls() >= toleratedCalls) {
-					if (cant != 0) {
-						out.write(",");
-					}
-					out.write(func.getCalled() + ":" + func.getCalls());
-					cant++;
-				}
-			}
-			
 			out.write("\">\n");
-			
-			out.write("\">\n");
-			
-			out.write("\">\n");
-			
-			out.write("\">\n");
-			
+
 			out.write("</applet>\n");
 			out.write("</HTML>");
 
@@ -365,4 +407,5 @@ public class EntryPoint {
 			e.printStackTrace();
 		}
 	}
+
 }
