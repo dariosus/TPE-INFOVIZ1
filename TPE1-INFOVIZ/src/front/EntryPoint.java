@@ -25,11 +25,18 @@ public class EntryPoint {
 		final SortedSet<Function> functions = new TreeSet<Function>(
 				comparators.getLinesComparator());
 
+		final SortedSet<Function> functionsParameters = new TreeSet<Function>(
+				comparators.getLinesComparator());
+
 		final JavaParser javaparser = JavaParser.getInstance();
 
-		final Map<String, Float> map = javaparser.getCommentsPerMethod();
+		final Map<String, Float> commentsPerMethod = javaparser
+				.getCommentsPerMethod();
 
-		for (final Entry<String, Float> entry : map.entrySet()) {
+		final Map<String, Float> parametersPerMethod = javaparser
+				.getParametersPerMethod();
+
+		for (final Entry<String, Float> entry : commentsPerMethod.entrySet()) {
 			functions.add(new Function(entry.getValue(), 41, 40, 39, true,
 					true, entry.getKey(), new Module("Module", null)));
 		}
