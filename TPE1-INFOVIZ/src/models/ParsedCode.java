@@ -24,9 +24,11 @@ public class ParsedCode {
 
 		if (!this.functionsMap.containsKey(function)) {
 			this.addFunction(function);
-			this.functionsMap.get(function).put(metric, value);
+			this.functionsMap.get(function).put(metric,
+					(float) Math.floor(value));
 		} else {
-			this.functionsMap.get(function).put(metric, value);
+			this.functionsMap.get(function).put(metric,
+					(float) Math.floor(value));
 
 		}
 		return true;
