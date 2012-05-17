@@ -21,20 +21,38 @@ public class EntryPoint {
 
 	public static void main(final String[] args) {
 
+		// Nombre del archivo a generar
 		final String filenameLines = "linesCompartor";
 		final String filenameCompartor = "parametersCompartor";
+		final String filenameBoxPlot = "functionsScatterPlot";
 
-		// final int height = Integer.parseInt(args[0]);
-		// final int width = Integer.parseInt(args[1]);
-		final int width = 1000;
-		final int WIDTH = 25;
-		final int toleratedLines = Integer.parseInt(args[0]);
-		final int limitedLines = Integer.parseInt(args[1]);
-		final int toleratedParameters = Integer.parseInt(args[2]);
-		final int limitedParameters = Integer.parseInt(args[3]);
-
+		// Titulo del grafico
 		final String title = "Java Code Analizer";
 		final String titleParameters = "Java Code Parameters";
+		final String titleScatter = "ScatterPlot Code Analizer";
+
+		// Constantes de tama–o
+		final int width = 1000;
+		final int WIDTH = 25;
+		final int SCATTER_WIDTH = 900;
+		final int SCATTER_HEIGHT = 600;
+
+		/*
+		 * Parseo de entrada Estandar Orden: 0)Nombre del Path del XML, Lineas
+		 * Toleradas, 1)Limite de Lineas a tolerar. 2)Limite de lineas a partir
+		 * del cual parsear. 3)Limite de parametros a Tolerar como buena
+		 * calidad. 4)Limite a partir de cual empezar a graficar las funciones
+		 * 5)Llamadas toleradas 6)Cantidad de Veces toleradas que una funcion es
+		 * llamadada
+		 */
+		final String path = args[0];
+		final int toleratedLines = Integer.parseInt(args[1]);
+		final int limitedLines = Integer.parseInt(args[2]);
+		final int toleratedParameters = Integer.parseInt(args[3]);
+		final int limitedParameters = Integer.parseInt(args[4]);
+		final int toleratedCalls = Integer.parseInt(args[5]);
+		final int toleratedCalled = Integer.parseInt(args[6]);
+
 		final Comparators comparators = new Comparators();
 
 		final SortedSet<Function> functionsLines = new TreeSet<Function>(
@@ -46,7 +64,7 @@ public class EntryPoint {
 		final SortedSet<Function> functionsBoxPlot = new TreeSet<Function>(
 				comparators.getLinesComparator());
 
-		final JavaParser javaparser = JavaParser.getInstance();
+		final JavaParser javaparser = new JavaParser(path);
 
 		final Map<String, Float> LinesPerMethod = javaparser.getLinesPerFile();
 
@@ -80,10 +98,12 @@ public class EntryPoint {
 
 		for (final Entry<String, CallsValue> entry : mapDependency.entrySet()) {
 
+			// if (entry.getValue().getCalls() < 50
+			// && entry.getValue().getCalled() < 50) {
 			functionsBoxPlot.add(new Function(20, entry.getValue().getCalled(),
 					entry.getValue().getCalls(), 39, true, true,
 					entry.getKey(), new Module("Module", null)));
-
+			// }
 		}
 
 		for (final Entry<String, Float> entry : LinesPerMethod.entrySet()) {
@@ -114,8 +134,9 @@ public class EntryPoint {
 				toleratedParameters, titleParameters, functionsParameters,
 				"parameters");
 
-		generateVisualizationBoxplot("functionsBoxPlot", 700, 700, 10, 20,
-				"TITULO", functionsBoxPlot);
+		generateVisualizationBoxplot(filenameBoxPlot, SCATTER_HEIGHT,
+				SCATTER_WIDTH, toleratedCalls, toleratedCalled, titleScatter,
+				functionsBoxPlot);
 
 	}
 
@@ -272,9 +293,9 @@ public class EntryPoint {
 			out.write("<param name=\"" + "title_sub1_font_size" + "\" value=\""
 					+ 20 + "\">\n");
 			out.write("<param name=\"" + "title_sub2_text" + "\" value=\""
-					+ "Cantidad de llamadas a la funcion toleradas: " + 
-					toleratedCalled  + ". Cantidad de llamadas que puede " +
-					"hacer una funcion: " + toleratedCalls + "\">\n");
+					+ "Cantidad de llamadas a la funcion toleradas: "
+					+ toleratedCalled + ". Cantidad de llamadas que puede "
+					+ "hacer una funcion: " + toleratedCalls + "\">\n");
 			out.write("<param name=\"" + "title_sub2_font_size" + "\" value=\""
 					+ 10 + "\">\n");
 			out.write("<param name=\"" + "x_axis_font_color" + "\" value=\""
@@ -305,7 +326,6 @@ public class EntryPoint {
 					+ 0 + "\">\n");
 			out.write("<param name=\"" + "grid_line_ver_type" + "\" value=\""
 					+ 0 + "\">\n");
-			
 
 			out.write("<param name=\"" + "s1_line_marker_type" + "\" value=\""
 					+ 1 + "\">\n");
@@ -313,8 +333,8 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "s1_line_marker" + "\" value=\""
 					+ "ONLY" + "\">\n");
-			out.write("<param name=\"" + "s1_label" + "\" value=\"" + "Son poco llamadas y hacen pocas llamadas"
-					+ "\">\n");
+			out.write("<param name=\"" + "s1_label" + "\" value=\""
+					+ "Son poco llamadas y hacen pocas llamadas" + "\">\n");
 
 			out.write("<param name=\"" + "s2_line_marker_type" + "\" value=\""
 					+ 8 + "\">\n");
@@ -322,8 +342,8 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "s2_line_marker" + "\" value=\""
 					+ "ONLY" + "\">\n");
-			out.write("<param name=\"" + "s2_label" + "\" value=\"" + "Son muy llamadas pero hacen pocas llamadas"
-					+ "\">\n");
+			out.write("<param name=\"" + "s2_label" + "\" value=\""
+					+ "Son muy llamadas pero hacen pocas llamadas" + "\">\n");
 
 			out.write("<param name=\"" + "s3_line_marker_type" + "\" value=\""
 					+ 7 + "\">\n");
@@ -331,8 +351,8 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "s3_line_marker" + "\" value=\""
 					+ "ONLY" + "\">\n");
-			out.write("<param name=\"" + "s3_label" + "\" value=\"" + "Son poco llamadas y hacen muchas llamadas"
-					+ "\">\n");
+			out.write("<param name=\"" + "s3_label" + "\" value=\""
+					+ "Son poco llamadas y hacen muchas llamadas" + "\">\n");
 
 			out.write("<param name=\"" + "s4_line_marker_type" + "\" value=\""
 					+ 3 + "\">\n");
@@ -340,8 +360,8 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "s4_line_marker" + "\" value=\""
 					+ "ONLY" + "\">\n");
-			out.write("<param name=\"" + "s4_label" + "\" value=\"" + "Son muy llamadas y hacen muchas llamadas"
-					+ "\">\n");
+			out.write("<param name=\"" + "s4_label" + "\" value=\""
+					+ "Son muy llamadas y hacen muchas llamadas" + "\">\n");
 
 			out.write("<param name=\"" + "xy_pairs" + "\" value=\"" + "Y"
 					+ "\">\n");
@@ -350,7 +370,8 @@ public class EntryPoint {
 
 			out.write("<param name=\"" + "xy1_value" + "\" value=\"");
 			cant = 0;
-			System.out.println("Funciones que son poco llamadas y hacen pocas llamadas");
+			System.out
+					.println("Funciones que son poco llamadas y hacen pocas llamadas");
 			for (final Function func : functions) {
 				if (func.getCalled() < toleratedCalled
 						&& func.getCalls() < toleratedCalls) {
@@ -358,8 +379,8 @@ public class EntryPoint {
 						out.write(",");
 					}
 					out.write(func.getCalled() + ":" + func.getCalls());
-					System.out.println(func.getName() + ": Llamadas a ella = " 
-							+ func.getCalled() + ". Llamadas hechas = " 
+					System.out.println(func.getName() + ": Llamadas a ella = "
+							+ func.getCalled() + ". Llamadas hechas = "
 							+ func.getCalls() + ".");
 					cant++;
 				}
@@ -367,7 +388,8 @@ public class EntryPoint {
 			out.write("\">\n");
 
 			out.write("<param name=\"" + "xy2_value" + "\" value=\"");
-			System.out.println("Funciones que son muy llamadas y hacen pocas llamadas");
+			System.out
+					.println("Funciones que son muy llamadas y hacen pocas llamadas");
 			cant = 0;
 			for (final Function func : functions) {
 				if (func.getCalled() >= toleratedCalled
@@ -376,8 +398,8 @@ public class EntryPoint {
 						out.write(",");
 					}
 					out.write(func.getCalled() + ":" + func.getCalls());
-					System.out.println(func.getName() + ": Llamadas a ella = " 
-							+ func.getCalled() + ". Llamadas hechas = " 
+					System.out.println(func.getName() + ": Llamadas a ella = "
+							+ func.getCalled() + ". Llamadas hechas = "
 							+ func.getCalls() + ".");
 					cant++;
 				}
@@ -385,7 +407,8 @@ public class EntryPoint {
 			out.write("\">\n");
 
 			out.write("<param name=\"" + "xy3_value" + "\" value=\"");
-			System.out.println("Funciones que son poco llamadas pero hacen muchas llamadas");
+			System.out
+					.println("Funciones que son poco llamadas pero hacen muchas llamadas");
 			cant = 0;
 			for (final Function func : functions) {
 				if (func.getCalled() < toleratedCalled
@@ -394,8 +417,8 @@ public class EntryPoint {
 						out.write(",");
 					}
 					out.write(func.getCalled() + ":" + func.getCalls());
-					System.out.println(func.getName() + ": Llamadas a ella = " 
-							+ func.getCalled() + ". Llamadas hechas = " 
+					System.out.println(func.getName() + ": Llamadas a ella = "
+							+ func.getCalled() + ". Llamadas hechas = "
 							+ func.getCalls() + ".");
 					cant++;
 				}
@@ -403,7 +426,8 @@ public class EntryPoint {
 			out.write("\">\n");
 
 			out.write("<param name=\"" + "xy4_value" + "\" value=\"");
-			System.out.println("Funciones que son muy llamadas y hacen muchas llamadas");
+			System.out
+					.println("Funciones que son muy llamadas y hacen muchas llamadas");
 			cant = 0;
 			for (final Function func : functions) {
 				if (func.getCalled() >= toleratedCalled
@@ -412,8 +436,8 @@ public class EntryPoint {
 						out.write(",");
 					}
 					out.write(func.getCalled() + ":" + func.getCalls());
-					System.out.println(func.getName() + ": Llamadas a ella = " 
-							+ func.getCalled() + ". Llamadas hechas = " 
+					System.out.println(func.getName() + ": Llamadas a ella = "
+							+ func.getCalled() + ". Llamadas hechas = "
 							+ func.getCalls() + ".");
 					cant++;
 				}
@@ -421,15 +445,15 @@ public class EntryPoint {
 
 			out.write("\">\n");
 
-			out.write("<param name=\"" + "x_axis_title" + "\" value=\""
-					+ "Y" + "\">\n");
-			out.write("<param name=\"" + "y_axis_title" + "\" value=\""
-					+ "Y" + "\">\n");
+			out.write("<param name=\"" + "x_axis_title" + "\" value=\"" + "Y"
+					+ "\">\n");
+			out.write("<param name=\"" + "y_axis_title" + "\" value=\"" + "Y"
+					+ "\">\n");
 			out.write("<param name=\"" + "x_axis_title_text" + "\" value=\""
 					+ "Cantidad de llamadas a la funcion" + "\">\n");
 			out.write("<param name=\"" + "y_axis_title_text" + "\" value=\""
 					+ "Cantidad de veces que la funcion es llamada" + "\">\n");
-			
+
 			out.write("</applet>\n");
 			out.write("</HTML>");
 

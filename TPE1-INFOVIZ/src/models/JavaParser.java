@@ -19,7 +19,7 @@ public class JavaParser implements IParser {
 	ParsedCode parsedCodeimpl;
 
 	// Cableado
-	private static String path = "TPE1-INFOVIZ/squall-java.xml";
+	private String path;
 
 	// public static void main(final String[] args) {
 	// System.out.println("HOLA");
@@ -40,14 +40,15 @@ public class JavaParser implements IParser {
 	// System.out.println(map.toString());
 	// }
 
-	public JavaParser() {
+	public JavaParser(final String path) {
+		this.path = path;
 		this.parsedCodeimpl = this.parseXML(path);
 	}
 
-	public static JavaParser getInstance() {
+	public JavaParser getInstance() {
 
 		if (parserInstance == null) {
-			parserInstance = new JavaParser();
+			parserInstance = new JavaParser(this.path);
 		}
 
 		return parserInstance;
