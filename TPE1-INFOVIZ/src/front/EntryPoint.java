@@ -271,6 +271,12 @@ public class EntryPoint {
 					+ title + "\">\n");
 			out.write("<param name=\"" + "title_sub1_font_size" + "\" value=\""
 					+ 20 + "\">\n");
+			out.write("<param name=\"" + "title_sub2_text" + "\" value=\""
+					+ "Cantidad de llamadas a la funcion toleradas: " + 
+					toleratedCalled  + ". Cantidad de llamadas que puede " +
+					"hacer una funcion: " + toleratedCalls + "\">\n");
+			out.write("<param name=\"" + "title_sub2_font_size" + "\" value=\""
+					+ 10 + "\">\n");
 			out.write("<param name=\"" + "x_axis_font_color" + "\" value=\""
 					+ "000000" + "\">\n");
 			out.write("<param name=\"" + "x_axis_font_size" + "\" value=\""
@@ -299,6 +305,7 @@ public class EntryPoint {
 					+ 0 + "\">\n");
 			out.write("<param name=\"" + "grid_line_ver_type" + "\" value=\""
 					+ 0 + "\">\n");
+			
 
 			out.write("<param name=\"" + "s1_line_marker_type" + "\" value=\""
 					+ 1 + "\">\n");
@@ -306,7 +313,7 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "s1_line_marker" + "\" value=\""
 					+ "ONLY" + "\">\n");
-			out.write("<param name=\"" + "s1_label" + "\" value=\"" + "Tipo 1"
+			out.write("<param name=\"" + "s1_label" + "\" value=\"" + "Son poco llamadas y hacen pocas llamadas"
 					+ "\">\n");
 
 			out.write("<param name=\"" + "s2_line_marker_type" + "\" value=\""
@@ -315,7 +322,7 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "s2_line_marker" + "\" value=\""
 					+ "ONLY" + "\">\n");
-			out.write("<param name=\"" + "s2_label" + "\" value=\"" + "Tipo 2"
+			out.write("<param name=\"" + "s2_label" + "\" value=\"" + "Son muy llamadas pero hacen pocas llamadas"
 					+ "\">\n");
 
 			out.write("<param name=\"" + "s3_line_marker_type" + "\" value=\""
@@ -324,7 +331,7 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "s3_line_marker" + "\" value=\""
 					+ "ONLY" + "\">\n");
-			out.write("<param name=\"" + "s3_label" + "\" value=\"" + "Tipo 3"
+			out.write("<param name=\"" + "s3_label" + "\" value=\"" + "Son poco llamadas y hacen muchas llamadas"
 					+ "\">\n");
 
 			out.write("<param name=\"" + "s4_line_marker_type" + "\" value=\""
@@ -333,7 +340,7 @@ public class EntryPoint {
 					+ "\">\n");
 			out.write("<param name=\"" + "s4_line_marker" + "\" value=\""
 					+ "ONLY" + "\">\n");
-			out.write("<param name=\"" + "s4_label" + "\" value=\"" + "Tipo 4"
+			out.write("<param name=\"" + "s4_label" + "\" value=\"" + "Son muy llamadas y hacen muchas llamadas"
 					+ "\">\n");
 
 			out.write("<param name=\"" + "xy_pairs" + "\" value=\"" + "Y"
@@ -343,6 +350,7 @@ public class EntryPoint {
 
 			out.write("<param name=\"" + "xy1_value" + "\" value=\"");
 			cant = 0;
+			System.out.println("Funciones que son poco llamadas y hacen pocas llamadas");
 			for (final Function func : functions) {
 				if (func.getCalled() < toleratedCalled
 						&& func.getCalls() < toleratedCalls) {
@@ -350,12 +358,16 @@ public class EntryPoint {
 						out.write(",");
 					}
 					out.write(func.getCalled() + ":" + func.getCalls());
+					System.out.println(func.getName() + ": Llamadas a ella = " 
+							+ func.getCalled() + ". Llamadas hechas = " 
+							+ func.getCalls() + ".");
 					cant++;
 				}
 			}
 			out.write("\">\n");
 
 			out.write("<param name=\"" + "xy2_value" + "\" value=\"");
+			System.out.println("Funciones que son muy llamadas y hacen pocas llamadas");
 			cant = 0;
 			for (final Function func : functions) {
 				if (func.getCalled() >= toleratedCalled
@@ -364,12 +376,16 @@ public class EntryPoint {
 						out.write(",");
 					}
 					out.write(func.getCalled() + ":" + func.getCalls());
+					System.out.println(func.getName() + ": Llamadas a ella = " 
+							+ func.getCalled() + ". Llamadas hechas = " 
+							+ func.getCalls() + ".");
 					cant++;
 				}
 			}
 			out.write("\">\n");
 
 			out.write("<param name=\"" + "xy3_value" + "\" value=\"");
+			System.out.println("Funciones que son poco llamadas pero hacen muchas llamadas");
 			cant = 0;
 			for (final Function func : functions) {
 				if (func.getCalled() < toleratedCalled
@@ -378,12 +394,16 @@ public class EntryPoint {
 						out.write(",");
 					}
 					out.write(func.getCalled() + ":" + func.getCalls());
+					System.out.println(func.getName() + ": Llamadas a ella = " 
+							+ func.getCalled() + ". Llamadas hechas = " 
+							+ func.getCalls() + ".");
 					cant++;
 				}
 			}
 			out.write("\">\n");
 
 			out.write("<param name=\"" + "xy4_value" + "\" value=\"");
+			System.out.println("Funciones que son muy llamadas y hacen muchas llamadas");
 			cant = 0;
 			for (final Function func : functions) {
 				if (func.getCalled() >= toleratedCalled
@@ -392,12 +412,24 @@ public class EntryPoint {
 						out.write(",");
 					}
 					out.write(func.getCalled() + ":" + func.getCalls());
+					System.out.println(func.getName() + ": Llamadas a ella = " 
+							+ func.getCalled() + ". Llamadas hechas = " 
+							+ func.getCalls() + ".");
 					cant++;
 				}
 			}
 
 			out.write("\">\n");
 
+			out.write("<param name=\"" + "x_axis_title" + "\" value=\""
+					+ "Y" + "\">\n");
+			out.write("<param name=\"" + "y_axis_title" + "\" value=\""
+					+ "Y" + "\">\n");
+			out.write("<param name=\"" + "x_axis_title_text" + "\" value=\""
+					+ "Cantidad de llamadas a la funcion" + "\">\n");
+			out.write("<param name=\"" + "y_axis_title_text" + "\" value=\""
+					+ "Cantidad de veces que la funcion es llamada" + "\">\n");
+			
 			out.write("</applet>\n");
 			out.write("</HTML>");
 
