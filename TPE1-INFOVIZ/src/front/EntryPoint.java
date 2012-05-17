@@ -14,8 +14,8 @@ import models.Module;
 public class EntryPoint {
 	public static void main(String[] args) {
 		String filename ="test1";
-		int height = 800;
-		int width = 1400;
+		int height = 500;
+		int width = 300;
 		int tolerated = 40;
 		String title = "title";
 		Comparators comparators = new Comparators();
@@ -39,7 +39,7 @@ public class EntryPoint {
 			out.write("<HTML>\n");
 			out.write("<applet code=\"swiftchart.class\" width=\"" + width +"\" height=\"" + height + "\">\n");
 				
-			out.write("<param name=\"" + "chart_type" + "\" value=\"" + "horbar" + "\">\n");
+			out.write("<param name=\"" + "chart_type" + "\" value=\"" + "bar" + "\">\n");
 			out.write("<param name=\"" + "chart_border_display" + "\" value=\"" + "N" + "\">\n");
 			out.write("<param name=\"" + "1x_axis_font_orientation" + "\" value=\"" + "LEFT" + "\">\n");
 			out.write("<param name=\"" + "applet_bg" + "\" value=\"" + "CCDDFF" + "\">\n");
@@ -52,8 +52,8 @@ public class EntryPoint {
 			out.write("<param name=\"" + "y_axis_font_color" + "\" value=\"" + "000000" + "\">\n");
 			out.write("<param name=\"" + "y_axis_font_size" + "\" value=\"" + 12 + "\">\n");
 			out.write("<param name=\"" + "y_axis_text_align" + "\" value=\"" + "LEFT" + "\">\n");
-			out.write("<param name=\"" + "y_axis_value_display" + "\" value=\"" + "N" + "\">\n");
-			out.write("<param name=\"" + "legend_position" + "\" value=\"" + "INBOTTOMRIGHT" + "\">\n");
+			out.write("<param name=\"" + "y_axis_value_display" + "\" value=\"" + "Y" + "\">\n");
+			out.write("<param name=\"" + "legend_position" + "\" value=\"" + "NONE" + "\">\n");
 			out.write("<param name=\"" + "legend_font_color" + "\" value=\"" + "000000" + "\">\n");
 			out.write("<param name=\"" + "legend_border_color" + "\" value=\"" + "CCDDFF" + "\">\n");
 			out.write("<param name=\"" + "legend_font_size" + "\" value=\"" + 10 + "\">\n");
@@ -75,17 +75,32 @@ public class EntryPoint {
 			out.write("\">\n");
 			
 			i = 1;
+			out.write("<param name=\"" + "s" + 1 + "_value" + "\" value=\"");
 			
 			for (Function func: functions) {
-				out.write("<param name=\"" + "s" + i + "_value" + "\" value=\"" + func.getLines() + "\">\n");
-				out.write("<param name=\"" + "s" + i + "_label" + "\" value=\"" + func.getName() + "\">\n");
-				out.write("<param name=\"" + "s" + i + "_color" + "\" value=\"");
-				out.write(func.getLines() > tolerated ? "FF0000" : "00FF00");
-				out.write("\">\n");
-				out.write("<param name=\"" + "s" + i + "_bar_fill" + "\" value=\"" + 21 + "\">\n");
+				out.write("" + func.getLines());
+				if (i < functions.size()) {
+					out.write(',');
+				}
 				i++;
 			}
-			
+			out.write("\">\n");
+			out.write("<param name=\"s1_label\" value=\"asd\">\n");
+			out.write("<param name=\"" + "s" + 1 + "_color" + "\" value=\"");
+			i=1;
+			for (Function func: functions) {
+				if (func.getLines() > tolerated) {
+					out.write("FF0000");
+				} else {
+					out.write("00FF00");
+				}
+				if (i < functions.size()) {
+					out.write(',');
+				}
+				i++;
+			}
+			out.write("\">\n");
+			out.write("<param name=\"" + "s" + 1 + "_bar_fill" + "\" value=\"" + 21 + "\">\n");
 			out.write("<param name=\"" + "y1_target" + "\" value=\"" + tolerated + "\">\n");
 			out.write("<param name=\"" + "y1_target_label" + "\" value=\"" + "Tolerated Lines" + "\">\n");
 			out.write("<param name=\"" + "y1_target_color" + "\" value=\"" + "0000FF" + "\">\n");
