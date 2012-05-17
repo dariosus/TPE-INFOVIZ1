@@ -24,6 +24,7 @@ public class Function {
 		this.parameters = parameters;
 		this.recursive = recursive;
 		this.commented = commented;
+		this.name = name;
 		this.module = module;
 	}
 	
