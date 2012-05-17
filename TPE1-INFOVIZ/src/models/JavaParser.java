@@ -19,7 +19,7 @@ public class JavaParser implements IParser {
 	ParsedCode parsedCodeimpl;
 
 	// Cableado
-	private static String path = "MetricResults.xml";
+	private static String path = "TPE1-INFOVIZ/MetricResults.xml";
 
 	// public static void main(final String[] args) {
 	// System.out.println("HOLA");
